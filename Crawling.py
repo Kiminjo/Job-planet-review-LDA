@@ -76,11 +76,15 @@ class top50_companies :
         company_list['number_of_review'] = self.get_number_of_reviews_per_company(last_page=7)
         
         """
-        As a prior knowledge, '구카카오' is a non-existent, so remove it 
+        '구카카오', '구글 코리아', '오케이몰', '데브시스터즈' and '유디피' remove.
         Remove companies with more than 200 review
         Extract top 50 companies
         """
-        company_list = company_list[company_list['name'] != '구카카오']    
+        company_list = company_list[company_list['name'] != '구카카오']
+        company_list = company_list[company_list['name'] != '구글코리아']
+        company_list = company_list[company_list['name'] != '유디피']
+        company_list = company_list[company_list['name'] != '오케이몰']       
+        company_list = company_list[company_list['name'] != '데브시스터즈']               
         company_list = company_list[company_list['number_of_review'] < 200].iloc[:num_of_company, :]
         company_list = company_list.reset_index(drop=True)
         
@@ -108,8 +112,19 @@ class crawling_reviews :
         self.cons_list = []
         self.wish_list = []
         self.like_list = []
-
         
+        
+    def list_initialize(self) :
+        self.total_score_list = []
+        self.duty_list = []
+        self.work_status_list = []
+        self.date_list = []
+        self.title_list = []
+        self.pros_list = []
+        self.cons_list = []
+        self.wish_list = []
+        self.like_list = []
+                
         
     def login(self) :
         member_data = {'user[email]' : self.email, 'user[password]' : self.pw}
@@ -161,49 +176,58 @@ class crawling_reviews :
     def crawling(self) :
         
         request, s = self.login()
-#여기에 기업 for loop 추가
-        for page in range(self.companies.number_of_review_page[0]) :
-            request = self.target_page.format(self.companies.id[0], self.companies.name[0], page+1)
-            request = s.get(request)
-            soup = BeautifulSoup(request.text, 'html.parser')
-
-            if page+1 < self.companies.number_of_review_page[0] :
-                for idx in range(5) :
-                    review_box = soup.find_all('div', class_='content_wrap')[idx]
-                
-                    self.total_score_list = self.total_score(review_box, self.total_score_list)
-                    self.duty_list = self.get_duties(review_box, self.duty_list)
-                    self.work_status_list = self.get_work_status(review_box, self.work_status_list)
-                    self.date_list = self.get_date(review_box, self.date_list)
-                    self.title_list = self.get_title(review_box, self.title_list)
-                    self.pros_list = self.get_pros(review_box, self.pros_list)
-                    self.cons_list = self.get_cons(review_box, self.cons_list)
-                    self.wish_list = self.get_wish_list(review_box, self.wish_list)
-                    self.like_list = self.get_like(review_box, self.like_list)
-            
-            else :
-                for idx in range(self.companies.number_of_review[0]%5) :
-                    review_box = soup.find_all('div', class_='content_wrap')[idx]
-                
-                    self.total_score_list = self.total_score(review_box, self.total_score_list)
-                    self.duty_list = self.get_duties(review_box, self.duty_list)
-                    self.work_status_list = self.get_work_status(review_box, self.work_status_list)
-                    self.date_list = self.get_date(review_box, self.date_list)
-                    self.title_list = self.get_title(review_box, self.title_list)
-                    self.pros_list = self.get_pros(review_box, self.pros_list)
-                    self.cons_list = self.get_cons(review_box, self.cons_list)
-                    self.wish_list = self.get_wish_list(review_box, self.wish_list)
-                    self.like_list = self.get_like(review_box, self.like_list)
-                    
+        data = pd.DataFrame(columns = ['name' ,'total_score' ,'duty' ,'work_state'  ,'date' ,'title' ,'pros' ,'cons', 
+                                       'wish', 'like'])
         
-        data = pd.DataFrame({'name' : self.companies.name[0], 'total_score' : self.total_score_list, 'duty' : self.duty_list, 
-                             'work_state' : self.work_status_list,'date' : self.date_list, 'title' : self.title_list, 
-                             'pros' : self.pros_list, 'cons' : self.cons_list,'wish' : self.wish_list, 'like' : self.like_list})
+        for company_idx in range(len(self.companies)) :
+            self.list_initialize()
+            
+            for page in range(self.companies.number_of_review_page[company_idx]) :
+                request = self.target_page.format(self.companies.id[company_idx], self.companies.name[company_idx], page+1)
+                request = s.get(request)
+                soup = BeautifulSoup(request.text, 'html.parser')
+                
+                if page+1 < self.companies.number_of_review_page[company_idx] :
+                    for idx in range(5) :
+                        review_box = soup.find_all('div', class_='content_wrap')[idx]
+                        print('0--------------------------- {}'.format(self.companies.name[company_idx]))
+                    
+                        self.total_score_list = self.total_score(review_box, self.total_score_list)
+                        self.duty_list = self.get_duties(review_box, self.duty_list)
+                        self.work_status_list = self.get_work_status(review_box, self.work_status_list)
+                        self.date_list = self.get_date(review_box, self.date_list)
+                        self.title_list = self.get_title(review_box, self.title_list)
+                        self.pros_list = self.get_pros(review_box, self.pros_list)
+                        self.cons_list = self.get_cons(review_box, self.cons_list)
+                        self.wish_list = self.get_wish_list(review_box, self.wish_list)
+                        self.like_list = self.get_like(review_box, self.like_list)
+                
+                else :
+                    for idx in range(self.companies.number_of_review[company_idx]%5) :
+                        review_box = soup.find_all('div', class_='content_wrap')[idx]
+                        print('1--------------------------{}'.format(self.companies.name[company_idx]))
+                        
+                        self.total_score_list = self.total_score(review_box, self.total_score_list)
+                        self.duty_list = self.get_duties(review_box, self.duty_list)
+                        self.work_status_list = self.get_work_status(review_box, self.work_status_list)
+                        self.date_list = self.get_date(review_box, self.date_list)
+                        self.title_list = self.get_title(review_box, self.title_list)
+                        self.pros_list = self.get_pros(review_box, self.pros_list)
+                        self.cons_list = self.get_cons(review_box, self.cons_list)
+                        self.wish_list = self.get_wish_list(review_box, self.wish_list)
+                        self.like_list = self.get_like(review_box, self.like_list)
+            
+
+    
+            df = pd.DataFrame({'name' : self.companies.name[company_idx], 'total_score' : self.total_score_list, 
+                               'duty' : self.duty_list, 'work_state' : self.work_status_list,'date' : self.date_list, 
+                               'title' : self.title_list, 'pros' : self.pros_list, 'cons' : self.cons_list,
+                               'wish' : self.wish_list, 'like' : self.like_list})
+            
+            data = pd.concat([data, df], axis=0)
         
         return data
     
-
-
 
 if __name__ == "__main__" :
     top50 = top50_companies()
@@ -212,11 +236,6 @@ if __name__ == "__main__" :
     crawling = crawling_reviews(target_companies)
     data = crawling.crawling()
     
-
-
-
-
-
 
 
 
