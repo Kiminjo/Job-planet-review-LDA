@@ -153,7 +153,9 @@ class crawling_reviews :
         return date_list
     
     def get_title(self, req, title_list) :
-        title_list.append(req.find_all('h2', class_='us_label')[0].getText())
+        rm_BEST = req.find_all('h2', class_='us_label')[0]
+        rm_BEST.find_all('span')[0].replace_with('')
+        title_list.append(re.sub(r'(\")', '', rm_BEST.text.strip()))
         return title_list
     
     def get_pros(self, req, pros_list) :
@@ -237,8 +239,9 @@ if __name__ == "__main__" :
     data = crawling.crawling()
     
 
-
-
+# data.to_csv('data.csv', encoding='utf-8-sig')
+# import os
+# os.getcwd()
 """""""""""
 승진 기회 및 가능성, 복지 및 급여, 업무와 삶의 균형 등을 크롤링하면 안되는 이유
 """""""""""
