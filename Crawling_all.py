@@ -81,4 +81,4 @@ for p in range(1, pages_last+1):
         
 #%%
 all_corp = pd.DataFrame(d)
-all_corp.to_csv('all_corp.csv', encoding='utf-8-sig')
+# all_corp.to_csv('all_corp.csv', encoding='utf-8-sig')
