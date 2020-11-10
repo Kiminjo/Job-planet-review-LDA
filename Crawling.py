@@ -159,15 +159,15 @@ class crawling_reviews :
         return title_list
     
     def get_pros(self, req, pros_list) :
-        pros_list.append(req.find_all('dd', class_='df1')[0].getText())
+        pros_list.append(req.find_all('dd', class_='df1')[0].getText().strip())
         return pros_list
     
     def get_cons(self, req, cons_list) :
-        cons_list.append(req.find_all('dd', class_='df1')[1].getText())
+        cons_list.append(req.find_all('dd', class_='df1')[1].getText().strip())
         return cons_list
     
     def get_wish_list(self, req, wish_list) :
-        wish_list.append(req.find_all('dd', class_='df1')[2].getText())
+        wish_list.append(req.find_all('dd', class_='df1')[2].getText().strip())
         return wish_list
     
     def get_like(self, req, like_list) :
