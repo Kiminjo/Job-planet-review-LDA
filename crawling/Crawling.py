@@ -99,8 +99,8 @@ class top50_companies :
 class crawling_reviews :
     
     def __init__(self, companies):
-        self.email = 'cardchan@naver.com'
-        self.pw = 'fjrzlaos22'
+        self.email = 'id'
+        self.pw = 'pw'
         self.target_page = 'https://www.jobplanet.co.kr/companies/{}/reviews/{}?page={}&review_type=|D=cardchan@naver.com'
         self.companies = companies
         self.total_score_list = []
