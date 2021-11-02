@@ -1,37 +1,44 @@
-# Job-planet-review-LDA<br>
-  
-## 1. 프로젝트 소개<br>
+# Extract company preference factors
 
+Based on company review data, company preference factors are derived. This project was carried out as a part of the "Unstructured Data Analysis" class at the Department of Data Science, Seoul National University of Science and Technology.
+<br></br>
 
-### 진행기간
+## Deriving preference factors from company review data
 
-- 2020년 10월 17일 ~ 2020년 12월 8일<br><br>
+In this project, the preference factors of a specific company are derived by using the review data listed on the company review site, among them "Job Planet".
 
-### 참여인원
+By referring to the rankings and star ratings of companies classified as IT companies on Job Planet, companies ranked 50th or higher were classified as `preferred companies`. In addition, 50 companies with a score of 2 or less were randomly selected and classified as `non-preferred companies`.
 
-김인조, 이경찬<br><br>
+LDA, a topic modeling technique, was used to derive corporate preference factors. Preference factors and non-preference factors were derived for preferred and non-preferred companies, respectively.
 
-### 프로젝트 내 역할
+Recently, the difficulty of finding proper workers is emerging as a serious social problem in Korean society as serious as finding a job. From the company's point of view, it is necessary to identify important factors when selecting a company to recruit talent and prepare for it in advance. This project is expected to be of great help in the preparation process of the company.
 
-- selenium 기반 리뷰 데이터 크롤링
-- 텍스트 데이터 전처리
-- LDA 수행<br><br><br>
+A results of this study can be found [here](https://github.com/Kiminjo/Text-analysis-of-papers/files/7459964/3.pdf).
 
-## 2. 연구목적<br>
+<br></br>
 
+## Dataset
 
-### 2-1) 연구 배경
+The reviews of workers who have personally worked the company reflect an honest evaluation of the company based on their experiences. Based on anonymity, they can honestly talk about the company's problems that they couldn't even talk about.
 
-- 청년 실업난이 심화되면서 사회 문제로 대두되고 있음과 더불어, 소수의 대기업에 취준생들이 몰리면서 중소기업 및 스타트업은 인력난에 시달리고 있음
-- 청년들이 선호하는 기업의 리뷰를 분석하여 해당 기업의 선호 요인을 파악하면 인력난 해소에 기여할 수 있을것으로 파악됨<br><br>
+The data used in the experiment are as follows.
 
-### 2-2) 연구 목적
+![data source](https://user-images.githubusercontent.com/42087965/139834244-447270f8-7101-4dad-9c7a-b0b379aaf203.png)
 
-- 기업 정보 리뷰 사이트 '잡플래닛'에서 선호도가 높은 50개의 기업(이하 선호 기업)과 평점 2점대 기업 50개(이하 일반 기업)의 리뷰데이터를 비교하여 고선호 기업의 선호 요인을 분석하고자 함<br><br><br>
+The data was collected from the corporate review site "Job Planet". `Selenium` library was used for data collection.
 
-## 3. 필요 기술
+### Data imblance
 
+When we collected and checked the review data of the target companies, there were twice as many review data of non-preferred companies than that of preferred companies.
 
-- 웹 크롤링 (Web crawling)
-- 한국어 자연어 전처리 능력 (Korean text preprocessing)
-- Topic modeling : LDA
+So, I went through the process of filtering reviews of non-preferred companies based on the “likes” of the reviews.
+<br></br>
+
+## Software Requirements
+- python >= 3.5
+- selenium
+- gensim : A library for natural language processing in Python. It provides various basic topic modeling methods such as LDA, doc2vec, and word2vec.
+- konlpy : A library for preprocessing Korean text in Python
+- scikit-learn
+- numpy 
+- pandas 
